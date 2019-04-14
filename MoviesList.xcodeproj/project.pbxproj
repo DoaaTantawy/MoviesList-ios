@@ -11,6 +11,7 @@
 		8A0FE0C72260C26200ABAEBB /* ReviewsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FE0C62260C26200ABAEBB /* ReviewsTableViewController.m */; };
 		8A13F9BB225FEB9C0082D71F /* themoviedb.sql in Resources */ = {isa = PBXBuildFile; fileRef = 8A13F9BA225FEB9C0082D71F /* themoviedb.sql */; };
 		8A26462E2263CE5200C4303E /* homeIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A26462D2263CE5100C4303E /* homeIcon.png */; };
+		8A2646322263DFE700C4303E /* Screenshots.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A2646312263DFE700C4303E /* Screenshots.xcassets */; };
 		8A61AD052263529200F77592 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61AD042263529200F77592 /* DetailsViewController.m */; };
 		8A61AD0722635C4700F77592 /* like.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A61AD0622635C4700F77592 /* like.png */; };
 		8A61AD09226362E500F77592 /* placeholderImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A61AD08226362E500F77592 /* placeholderImg.png */; };
@@ -53,6 +54,7 @@
 		8A0FE0C62260C26200ABAEBB /* ReviewsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReviewsTableViewController.m; sourceTree = "<group>"; };
 		8A13F9BA225FEB9C0082D71F /* themoviedb.sql */ = {isa = PBXFileReference; lastKnownFileType = file; path = themoviedb.sql; sourceTree = "<group>"; };
 		8A26462D2263CE5100C4303E /* homeIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = homeIcon.png; sourceTree = "<group>"; };
+		8A2646312263DFE700C4303E /* Screenshots.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Screenshots.xcassets; sourceTree = "<group>"; };
 		8A61AD032263529200F77592 /* DetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		8A61AD042263529200F77592 /* DetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailsViewController.m; sourceTree = "<group>"; };
 		8A61AD0622635C4700F77592 /* like.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = like.png; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		8A86FBB22259F8AA00ECA53F = {
 			isa = PBXGroup;
 			children = (
+				8A2646312263DFE700C4303E /* Screenshots.xcassets */,
 				8A86FBBD2259F8AA00ECA53F /* MoviesList */,
 				8A86FBD62259F8AB00ECA53F /* MoviesListTests */,
 				8A86FBE12259F8AB00ECA53F /* MoviesListUITests */,
@@ -307,6 +310,7 @@
 				8A26462E2263CE5200C4303E /* homeIcon.png in Resources */,
 				8A86FBC82259F8AB00ECA53F /* Assets.xcassets in Resources */,
 				8A61AD0B2263643A00F77592 /* holderImg.png in Resources */,
+				8A2646322263DFE700C4303E /* Screenshots.xcassets in Resources */,
 				8A61AD0722635C4700F77592 /* like.png in Resources */,
 				8A13F9BB225FEB9C0082D71F /* themoviedb.sql in Resources */,
 				8A86FBC62259F8AA00ECA53F /* Main.storyboard in Resources */,
