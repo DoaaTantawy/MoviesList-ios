@@ -7,25 +7,133 @@
 //
 
 #import "MoviesCollectionViewController.h"
+#import <AFNetworking/AFNetworking.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "DetailsViewController.h"
+#import "DBManager.h"
 
 @interface MoviesCollectionViewController ()
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
+@property (strong, nonatomic) IBOutlet UICollectionView *myCollection;
+@property (nonatomic, strong) DBManager *dbManager;
+@property (nonatomic, strong) NSArray *arrmovieInfo;
 
 @end
 
 @implementation MoviesCollectionViewController
+NSDictionary *parameters;
+NSMutableArray *contacts;
+DetailsViewController *movie;
+NSURL *URL;
 
-static NSString * const reuseIdentifier = @"Cell";
+
+static NSString * const reuseIdentifier = @"cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.dbManager = [[DBManager alloc] initWithDatabaseFilename:@"themoviedb.sql"];
     
-    // Register cell classes
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
+    movie= [self.storyboard instantiateViewControllerWithIdentifier:@"movieVC"];
     
-    // Do any additional setup after loading the view.
+    URL = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/popular?api_key=8b1cad7914e5aefb8190b0493bfae7a0"];
+    
+    [self getDataFromApi:URL];
+ 
+}
+
+
+
+-(void)getDataFromApi:(NSURL*) URL{
+    NSString *querySelect= @"select * from movieInfo";
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            // NSLog(@"%@ %@", response, responseObject);
+           // [SDWebImageManager.sharedManager.imageCache clearMemory] ;
+            
+            contacts = (NSMutableArray*) responseObject[@"results"];
+            NSString *query;
+            int count=(int)contacts.count;
+            NSString *queryDelete = [NSString stringWithFormat:@"delete from movieInfo"];
+            [self.dbManager executeQuery:queryDelete];
+            
+            for(int i=0; i<count; i++){
+                NSDictionary *dict =(NSDictionary *)contacts[i];
+                query = [NSString stringWithFormat:@"insert into movieInfo(movieInfoID,mid ,title, poster_path ,backdrop_path,original_title ,overview,release_date, vote_average) values(null, \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\",\"%@\")",[dict objectForKey: @"id"], [dict objectForKey: @"title"], [dict objectForKey: @"poster_path"], [dict objectForKey: @"backdrop_path"], [dict objectForKey: @"original_title"], [dict objectForKey: @"overview"], [dict objectForKey: @"release_date"], [dict objectForKey: @"vote_average"]];
+                [self.dbManager executeQuery:query];
+                
+                // If the query was successfully executed then pop the view controller.
+                if (self.dbManager.affectedRows != 0) {
+                    NSLog(@"Query was executed successfully. Affected rows = %d", self.dbManager.affectedRows);
+                }
+                else{
+                    NSLog(@"Could not execute the query.");
+                }
+                
+            }
+            
+        }
+    }];
+    [dataTask resume];
+    [self loadData:querySelect];
+}
+
+-(void)getDataFromApiTopRated:(NSURL*) URL{
+    NSString *querySelect= @"select * from movieTopRated";
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            // NSLog(@"%@ %@", response, responseObject);
+           //[SDWebImageManager.sharedManager.imageCache clearMemory] ;
+            
+            contacts = (NSMutableArray*) responseObject[@"results"];
+            NSString *query;
+            int count=(int)contacts.count;
+            NSString *queryDelete = [NSString stringWithFormat:@"delete from movieTopRated"];
+            [self.dbManager executeQuery:queryDelete];
+            
+            for(int i=0; i<count; i++){
+                NSDictionary *dict =(NSDictionary *)contacts[i];
+                query = [NSString stringWithFormat:@"insert into movieTopRated(movieInfoID,mid ,title, poster_path ,backdrop_path,original_title ,overview,release_date, vote_average) values(null, \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\",\"%@\")",[dict objectForKey: @"id"], [dict objectForKey: @"title"], [dict objectForKey: @"poster_path"], [dict objectForKey: @"backdrop_path"], [dict objectForKey: @"original_title"], [dict objectForKey: @"overview"], [dict objectForKey: @"release_date"], [dict objectForKey: @"vote_average"]];
+                [self.dbManager executeQuery:query];
+                
+                // If the query was successfully executed then pop the view controller.
+                if (self.dbManager.affectedRows != 0) {
+                    NSLog(@"Query was executed successfully. Affected rows = %d", self.dbManager.affectedRows);
+                }
+                else{
+                    NSLog(@"Could not execute the query.");
+                }
+                
+            }
+            
+        }
+    }];
+    [dataTask resume];
+    [self loadData:querySelect];
+}
+
+-(void)loadData:(NSString*)query{
+    
+    // Get the results.
+    if (self.arrmovieInfo != nil) {
+        self.arrmovieInfo = nil;
+    }
+    self.arrmovieInfo = [[NSArray alloc] initWithArray:[self.dbManager loadDataFromDB:query]];
+    
+    // Reload the table view.
+    [self->_myCollection reloadData];
 }
 
 /*
@@ -41,20 +149,26 @@ static NSString * const reuseIdentifier = @"Cell";
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+
+    return 1;
 }
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of items
-    return 0;
+    NSInteger numbOfRow=_arrmovieInfo.count;
+    
+    return numbOfRow;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    // Configure the cell
+    UIImageView *img=[cell viewWithTag:2];
+    NSString *imgUrl=@"http://image.tmdb.org/t/p/w185/";
+    imgUrl = [imgUrl stringByAppendingString: [NSString stringWithFormat:@"%@", [[self.arrmovieInfo objectAtIndex:indexPath.row] objectAtIndex:3]]];
+    
+    [img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imgUrl]]
+           placeholderImage:[UIImage imageNamed:@"holderImg.jpg"]];
     
     return cell;
 }
@@ -68,26 +182,32 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 */
 
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    movie.recordIDToEdit = [[[self.arrmovieInfo objectAtIndex:indexPath.row] objectAtIndex:0] intValue];
+    movie.favouriteOrNot=1;
+    [self.navigationController pushViewController:movie animated:YES];
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
+- (IBAction)indexChanged:(id)sender {
+    NSURL *URLpopular;
+    NSURL *URLtopRated;
+    switch (_segmentControl.selectedSegmentIndex)
+    {
+    case 0:
+    URLpopular= [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/popular?api_key=8b1cad7914e5aefb8190b0493bfae7a0"];
+            [self getDataFromApi:URLpopular];
+            movie.topRated=0;
+            break;
+        case 1:
+     URLtopRated = [NSURL URLWithString:@"https://api.themoviedb.org/3/movie/top_rated?api_key=8b1cad7914e5aefb8190b0493bfae7a0"];
+            [self getDataFromApiTopRated:URLtopRated];
+            movie.topRated=1;
+            
+            break;
+    default:
+            break;
+    }
 }
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 @end

@@ -7,44 +7,88 @@
 //
 
 #import "ReviewsTableViewController.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface ReviewsTableViewController ()
+@property (strong, nonatomic) IBOutlet UITableView *reviewsTable;
+
 
 @end
 
 @implementation ReviewsTableViewController
+NSString *reviewUrl;
+NSMutableArray *reviewsT;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+   
 }
 
-#pragma mark - Table view data source
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    printf("view will appear\n");
+    [self getReviews];
+}
+
+-(void)getReviews{
+    reviewUrl=@"https://api.themoviedb.org/3/movie/";
+    reviewUrl=[reviewUrl stringByAppendingString:_movieID];
+    reviewUrl=[reviewUrl stringByAppendingString:@"/reviews?api_key=8b1cad7914e5aefb8190b0493bfae7a0"];
+    NSURL *URL = [NSURL URLWithString:reviewUrl];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            // NSLog(@"%@",responseObject);
+            reviewsT=(NSMutableArray *) responseObject[@"results"];
+            [self->_reviewsTable reloadData];
+            
+            
+        }
+    }];
+    [dataTask resume];
+    
+    
+}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
-    return 0;
+    NSInteger numOfRow=reviewsT.count;
+    return numOfRow;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     // Configure the cell...
+    NSDictionary *dict=(NSDictionary *) reviewsT[indexPath.row];
     
+    cell.textLabel.text=[dict objectForKey:@"author"];
+    cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+  
     return cell;
 }
-*/
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 100;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSDictionary *dict=(NSDictionary *) reviewsT[indexPath.row];
+    NSURL* url = [[NSURL alloc] initWithString:[dict objectForKey:@"url"]];
+    [[UIApplication sharedApplication] openURL: url];
+    
+}
 
 /*
 // Override to support conditional editing of the table view.

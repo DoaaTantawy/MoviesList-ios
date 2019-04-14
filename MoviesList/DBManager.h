@@ -7,11 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import <sqlite3.h>
 
 @interface DBManager : NSObject
+-(instancetype)initWithDatabaseFilename:(NSString *)dbFilename;
+@property (nonatomic, strong) NSString *documentsDirectory;
+@property (nonatomic, strong) NSString *databaseFilename;
+@property (nonatomic, strong) NSMutableArray *arrResults;
+@property (nonatomic, strong) NSMutableArray *arrColumnNames;
+@property (nonatomic) int affectedRows;
+@property (nonatomic) long long lastInsertedRowID;
+
+
+-(void)runQuery:(const char *)query isQueryExecutable:(BOOL)queryExecutable;
+-(void)copyDatabaseIntoDocumentsDirectory;
+-(NSArray *)loadDataFromDB:(NSString *)query;
+-(void)executeQuery:(NSString *)query;
 
 @end
 
-NS_ASSUME_NONNULL_END

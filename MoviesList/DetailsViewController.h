@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
 
-@interface DetailsViewController : UIViewController
+@interface DetailsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@property NSDictionary *movieObj;
+@property (nonatomic) int recordIDToEdit;
+@property (nonatomic) int favouriteOrNot;
+@property (nonatomic) int topRated;
 
 @end
 
-NS_ASSUME_NONNULL_END
