@@ -168,7 +168,7 @@ static NSString * const reuseIdentifier = @"cell";
     imgUrl = [imgUrl stringByAppendingString: [NSString stringWithFormat:@"%@", [[self.arrmovieInfo objectAtIndex:indexPath.row] objectAtIndex:3]]];
     
     [img sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imgUrl]]
-           placeholderImage:[UIImage imageNamed:@"holderImg.jpg"]];
+           placeholderImage:[UIImage imageNamed:@"holderImg.png"]];
     
     return cell;
 }
