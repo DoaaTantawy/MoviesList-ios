@@ -1,8 +1,8 @@
-The application is using the moviedb api to list the user the recent movies which are sorted in two categories:
-1.popular 
-2.top-rated
-User can check movie detailes, its trailers, and its reviews.
-User can store any movie he likes in the favourites list.
+The application is using the moviedb api to list the user the recent movies which are sorted in two categories:<br/>
+1.popular<br/>
+2.top-rated<br/>
+User can check movie detailes, its trailers, and its reviews.<br/>
+User can store any movie he likes in the favourites list.<br/>
 The application uses sqlite3,AFNetworking,SDWebImage, and HCSStarRatingView and it's written in Objective-C.<br/> <br/>
 ScreenShots:<br/>
 1- Home screen:<br/>
