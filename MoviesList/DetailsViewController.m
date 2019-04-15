@@ -96,7 +96,7 @@ NSString *idMovie;
     _overviewLabel.text= [[results objectAtIndex:0] objectAtIndex:[self.dbManager.arrColumnNames indexOfObject:@"overview"]];
     
     [_imgView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",imgUrl]]
-                placeholderImage:[UIImage imageNamed:@"holderImg.jpg"]];
+                placeholderImage:[UIImage imageNamed:@"holderImg.png"]];
     
     HCSStarRatingView *starRatingView = [[HCSStarRatingView alloc] initWithFrame:CGRectMake(200, 262, 140, 45)];
     starRatingView.maximumValue = 5;
